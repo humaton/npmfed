@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "npmfed"
+require "thor"
+require 'colorize'
+
+class MyCLI < Thor
+  desc "check NPM PACKAGE NAME", "Get list of npm package dependencies and corresponding fedora builds"
+  option :koji
+  def check(name, version=nil)
+    package = Npmfed::NpmPackage.new name
+
+    puts "#{package.name}-#{package.version} dependencies:"
+    puts "================================================"
+
+    package.dependencies.each {|name, data|
+      if data.nil?
+        puts name + "  FAIL  ".to_s.red
+      else
+        puts name + "   OK  ".to_s.green + data[:builds].to_s
+      end
+    }
+    puts package.koji_requests
+    puts package.pkgdb_requests
+
+  end
+
+  desc 'test KOKOT', 'Used for testing shit'
+  def test(name)
+  end
+
+  desc 'download ...' , '... KOKOT'
+  def download
+  end
+end
+
+MyCLI.start(ARGV)
+
