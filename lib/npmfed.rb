@@ -1,5 +1,5 @@
-require "npmfed/version"
-
 module Npmfed
-  # Your code goes here...
+  require 'npmfed/version'
+  require 'npmfed/npm_package'
 end
+
