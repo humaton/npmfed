@@ -56,6 +56,7 @@ module Npmfed
     end
 
     def pkg_in_fedora? name
+      #koji search build -r 'nodejs-#{name}.*'
       @pkgdb_requests += 1
       pkgdb_uri = URI "https://admin.fedoraproject.org/pkgdb/api/package/?pkgname=nodejs-#{name}"
       pkgdb_data = JSON.parse Net::HTTP.get(pkgdb_uri)
