@@ -1,0 +1,78 @@
+# spec file for package <%="nodejs-" + spec.name %>
+
+%global npm_name <%= spec.npmname %>
+%{?nodejs_find_provides_and_requires}
+
+%global enable_tests 1
+
+Name:		<%= "nodejs-" + spec.npmname %>
+Version:	<%= spec.version %>
+Release:	0%{?dist}
+Summary:	<%= spec.summary %>
+<% unless spec.homepage.nil? || spec.homepage.empty? -%>
+    Url:		<%= spec.homepage %>
+<% end -%>
+Source0:	https://registry.npmjs.org/%{npm_name}/-/%{npm_name}-%{version}.tgz
+<% unless spec.licenses.empty? -%>
+    License:	<%= spec.licenses.join(" and ") %>
+<% else -%>
+    License:	CHECK(Nodejs)
+<% end -%>
+
+BuildArch:	noarch
+ExclusiveArch:	%{nodejs_arches} noarch
+
+BuildRequires:	nodejs-devel
+BuildRequires:	nodejs-packaging
+
+%if 0%{?enable_tests}
+<% spec.build_requires.uniq.sort.each do |d| -%>
+    BuildRequires:	<%= d %>
+<% end -%>
+%endif
+
+<% spec.requires.uniq.sort.each do |d| -%>
+    BuildRequires:	<%= d %>
+<% end -%>
+
+<% spec.requires.uniq.sort.each do |d| -%>
+    Requires:	<%= d %>
+<% end -%>
+
+%description
+<%= spec.description -%>
+
+
+%prep
+%setup -q -n package
+
+%build
+#nothing to do
+
+%install
+mkdir -p %{buildroot}%{nodejs_sitelib}/%{npm_name}
+
+cp -pr package.json index.js \
+%{buildroot}%{nodejs_sitelib}/%{npm_name}
+
+<% (spec.binfiles||{}).each do |name, target| -%>
+    rm -f %{buildroot}%{_bindir}/<%= name %>
+    ln -sf %{_libdir}/node_modules/%{npm_name}/<%= target -%> %{buildroot}%{_bindir}/<%= name %>
+<% end -%>
+%{nodejs_symlink_deps}
+
+%if 0%{?enable_tests}
+%check
+%{nodejs_symlink_deps} --check
+<%= spec.tests %>
+%endif
+
+%files
+%{nodejs_sitelib}/<%= spec.npmname %>
+<% if spec.binfiles -%>
+    %{_bindir}/*
+<% end %>
+%doc README.md
+%license LICENSE
+
+%changelog
