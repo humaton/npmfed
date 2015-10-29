@@ -1,8 +1,7 @@
 # Npmfed
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/npmfed`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Welcome to npmfed!
+This gem is here to help you (fedora packager) to get npmjs modules quickly packaged and includet in fedora
 
 ## Installation
 
@@ -22,7 +21,10 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+npmfed check NPM_PACKAGE_NAME 
+
+npmfed download
+
 
 ## Development
 
@@ -32,4 +34,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/npmfed.
+Bug reports and pull requests are welcome on GitHub at https://github.com/humaton/npmfed.
