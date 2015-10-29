@@ -8,7 +8,8 @@ require 'colorize'
 class MyCLI < Thor
   @debug = false
   desc "check NPM PACKAGE NAME", "Get list of npm package dependencies and corresponding fedora builds"
-  option :koji
+  option :create
+  option :deps
   def check(name, version=nil)
     package = Npmfed::NpmPackage.new name, @debug
 
@@ -26,6 +27,10 @@ class MyCLI < Thor
       puts "Koji requests " + package.koji_requests
       puts "Pkgdb requests " + package.pkgdb_requests
     end
+
+    #If so create dir structure for rpm
+    #If deps specified create alsi dir structure for deps
+    
   end
 
   desc 'test IDES', 'Used for testing shit'
