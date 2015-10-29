@@ -6,10 +6,11 @@ require "thor"
 require 'colorize'
 
 class MyCLI < Thor
+  @debug = false
   desc "check NPM PACKAGE NAME", "Get list of npm package dependencies and corresponding fedora builds"
   option :koji
   def check(name, version=nil)
-    package = Npmfed::NpmPackage.new name
+    package = Npmfed::NpmPackage.new name, @debug
 
     puts "#{package.name}-#{package.version} dependencies:"
     puts "================================================"
@@ -21,16 +22,17 @@ class MyCLI < Thor
         puts name + "   OK  ".to_s.green + data[:builds].to_s
       end
     }
-    puts package.koji_requests
-    puts package.pkgdb_requests
-
+    if @debug
+      puts "Koji requests " + package.koji_requests
+      puts "Pkgdb requests " + package.pkgdb_requests
+    end
   end
 
-  desc 'test KOKOT', 'Used for testing shit'
+  desc 'test IDES', 'Used for testing shit'
   def test(name)
   end
 
-  desc 'download ...' , '... KOKOT'
+  desc 'download ...' , '... IDES'
   def download
   end
 end

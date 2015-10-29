@@ -3,11 +3,13 @@ module Npmfed
   require 'json'
   class NpmPackage
     attr_accessor :name, :version, :npm_data, :tarball, :dependencies, :npmjs_url,
-                  :fedora_rawhide_version, :koji_requests, :pkgdb_requests
+                  :fedora_rawhide_version, :koji_requests, :pkgdb_requests, :debug
 
-    def initialize name, version = nil
+    def initialize name, debug, version = nil
+      #debuging options
       @koji_requests = 0
       @pkgdb_requests = 0
+      @debug = debug
 
       @npmjs_url = URI("https://registry.npmjs.org/#{name}")
       @fedora_rawhide_version = "f24"
@@ -16,7 +18,6 @@ module Npmfed
       @npm_data = @npm_data["versions"][@version] || abort("No such version: #{@version.inspect}")
       @name = @npm_data["name"]
       @dependencies = get_dependencies
-      puts @pkgdb_requests
       get_builds_for_deps
     end
 
@@ -29,7 +30,7 @@ module Npmfed
     end
 
     def get_dependencies
-      puts "Getting infromation about the package and its dependencies"
+      puts "Getting infromation about the package and its dependencies from pkgdb"
       result = {}
       @npm_data['dependencies'].each do |name, version|
         pkgdb_data = pkg_in_fedora? name
@@ -56,8 +57,8 @@ module Npmfed
     end
 
     def pkg_in_fedora? name
-      #koji search build -r 'nodejs-#{name}.*'
       @pkgdb_requests += 1
+      #"git ls-remote http://pkgs.fedoraproject.org/cgit/" + pkg + ".git/"
       pkgdb_uri = URI "https://admin.fedoraproject.org/pkgdb/api/package/?pkgname=nodejs-#{name}"
       pkgdb_data = JSON.parse Net::HTTP.get(pkgdb_uri)
       if (pkgdb_data["output"] == 'notok') then
@@ -68,18 +69,12 @@ module Npmfed
     end
 
     def get_builds_for_deps
-      puts "Getting infromation about builds of package dependencies"
+      puts "Getting infromation about builds of package dependencies from koji"
+      @koji_requests +=1
       @dependencies.each do |name, data|
-        data[:distgit_branches].each do |tag|
-          @koji_requests +=1
-          puts "making koji request : #{koji_requests}"
-          IO.popen("koji -q latest-build #{tag} nodejs-#{name}") do |f|
-            puts f.read
-              f.read.split {|string|
-                puts string
-                data[:builds] << string if string.include?("nodejs-")
-              }
-          end
+        IO.popen("koji search build -r 'nodejs-#{name}-[0-9]'") do |f|
+          puts("checking builds for" + " #{name}".yellow)
+          data[:builds] = f.readlines.collect {|build| build.chop }
         end unless data.nil?
       end
       puts "DONE".green
