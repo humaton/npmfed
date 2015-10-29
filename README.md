@@ -1,7 +1,8 @@
 # Npmfed
 
 Welcome to npmfed!
-This gem is here to help you (fedora packager) to get npmjs modules quickly packaged and includet in fedora
+This gem is here to help you (fedora packager) to get npmjs modules quickly packaged and include it in fedora.
+Aim of this project is to create tool simillar to gofed whitch will guide packager of npm modules through the process of checking dependencies. Generating and building packages locally and submitting packages for package review.
 
 ## Installation
 
