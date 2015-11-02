@@ -6,12 +6,14 @@ require 'npmfed/version'
 Gem::Specification.new do |spec|
   spec.name          = "npmfed"
   spec.version       = Npmfed::VERSION
+  spec.license       = "GPL-2.0"
   spec.authors       = ["Tomas Hrcka"]
   spec.email         = ["thrcka@redhat.com"]
 
   spec.summary       = %q{Tool for checking and generating rpm packages from npm modules}
   spec.description   = %q{Tool for checking and generating rpm packages from npm modules}
   spec.homepage      = "https://github.com/humaton/npmfed"
+  
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
