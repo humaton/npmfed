@@ -22,11 +22,11 @@ module Npmfed
     end
 
     def tarball
-      @npmdata["dist"]["tarball"]
+      @npm_data["dist"]["tarball"]
     end
 
     def licenses
-      @npmdata['licenses']
+      @npm_data['licenses']
     end
 
     def get_dependencies
@@ -54,6 +54,10 @@ module Npmfed
 
     def pkgversion
       @pkgversion ||= @version.tr('-', '_')
+    end
+    
+    def rpmname
+      "nodejs-#{@name}"
     end
 
     def pkg_in_fedora? name

@@ -23,14 +23,33 @@ class MyCLI < Thor
         puts name + "   OK  ".to_s.green + data[:builds].to_s
       end
     }
+    
+    puts "Package #{name} have #{package.dependencies.count} dependencies in npm registry"
+    puts "Packaged in fedora: #{package.dependencies.select{|name, data| name unless data.nil? }.count}"
+    puts "Not in fedora: " + "#{package.dependencies.select{|name, data| name if data.nil? }.count}".red
+    
     if @debug
       puts "Koji requests " + package.koji_requests
       puts "Pkgdb requests " + package.pkgdb_requests
     end
 
-    #If so create dir structure for rpm
-    #If deps specified create alsi dir structure for deps
-    
+    if options[:create]
+      FileUtils.mkdir_p "#{package.rpmname}"
+      tarball_uri = URI package.tarball
+      `wget #{tarball_uri} -P #{package.rpmname}/`
+
+      if options[:deps]
+	package.dependencies.each {|name, data|
+     	 if data.nil?
+          puts name + "  DOWNLOADING  ".to_s.red
+	  FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
+	  #tarball_uri = URI package.tarball
+          #`wget #{tarball_uri} -P #{package.rpmname}/deps/nodejs-#{name}/`
+         end
+        }
+        
+      end
+    end
   end
 
   desc 'test IDES', 'Used for testing shit'
