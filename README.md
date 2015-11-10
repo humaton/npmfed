@@ -26,9 +26,10 @@ Or install it yourself as:
 
 ## Usage
 
-npmfed check NPM_PACKAGE_NAME 
+npmfed check NPM_PACKAGE_NAME Get list of npm package dependencies and corresponding fedora builds
 
-npmfed download
+
+npmfed download only download tarball from npmjs or srpms from fedora
 
 
 ## Development
