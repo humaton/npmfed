@@ -10,6 +10,8 @@ class MyCLI < Thor
   desc "check NPM MODULE NAME", "Get list of npm package dependencies and corresponding fedora builds"
   option :create
   option :deps
+  option :scl
+
   def check(name, version=nil)
     package = Npmfed::NpmPackage.new name, @debug
 
@@ -39,7 +41,7 @@ class MyCLI < Thor
       tarball_uri = URI package.tarball
       `wget #{tarball_uri} -P #{package.rpmname}/`
 
-      rpm_package = Npmfed::RpmPackage.new package.name, package
+      rpm_package = Npmfed::RpmPackage.new package.name, package, options[:scl]
       rpm_package.write
 
       if options[:deps]
@@ -51,7 +53,7 @@ class MyCLI < Thor
           FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
           tarball_uri = URI dependency.tarball
           `wget #{tarball_uri} -P "#{package.rpmname}/deps/nodejs-#{name}"/`
-          dep_rpm_package = Npmfed::RpmPackage.new name, dependency
+          dep_rpm_package = Npmfed::RpmPackage.new name, dependency, options[:scl]
           dep_rpm_package.write "#{package.rpmname}/deps/"
           dependencies << dependency
           end

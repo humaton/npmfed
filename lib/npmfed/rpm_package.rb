@@ -1,10 +1,11 @@
 module Npmfed
   class RpmPackage
-    attr_accessor :name,:npm_package
+    attr_accessor :name,:npm_package, :scl
 
-    def initialize name, npm_package
+    def initialize name, npm_package, scl=false
       @name = "nodejs-#{name}"
       @npm_package = npm_package
+      @scl = scl
     end
 
     def npmname
@@ -140,6 +141,7 @@ module Npmfed
       `rpmdev-bumpspec  -c "Initial build" "#{path unless path.nil?}#{@name}/#{@name}.spec"`
       command = "cd #{path unless path.nil?}#{@name}/ && fedpkg --dist=f24 srpm"
       `#{command}`
+      `spec2scl -i "#{path unless path.nil?}#{@name}/#{@name}.spec"` if @scl
     end
   end
 end
