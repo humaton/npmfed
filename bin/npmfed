@@ -51,6 +51,8 @@ class MyCLI < Thor
           FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
           tarball_uri = URI dependency.tarball
           `wget #{tarball_uri} -P "#{package.rpmname}/deps/nodejs-#{name}"/`
+          dep_rpm_package = Npmfed::RpmPackage.new name, dependency
+          dep_rpm_package.write "#{package.rpmname}/deps/"
           dependencies << dependency
           end
         end

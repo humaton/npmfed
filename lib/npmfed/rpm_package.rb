@@ -125,19 +125,19 @@ module Npmfed
       @npm_package.npm_data["test"]
     end
 
-    def write
+    def write path = nil
       require 'erb'
 
       template_name = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "templates", "nodejs-fedora.spec.erb"))
       template = File.read(template_name)
       # -:  omit blank lines ending in -%>
       erb = ERB.new(template, nil, "-")
-      File.open("#{@name}/#{@name}.spec", "w+") do |f|
+      File.open("#{path unless path.nil?}" + "#{@name}/#{@name}.spec", "w+") do |f|
         spec = self
         f.puts(erb.result(binding()))
       end
 
-      `rpmdev-bumpspec  -c "Initial build" "#{@name}/#{@name}.spec"`
+      `rpmdev-bumpspec  -c "Initial build" "#{path unless path.nil?}#{@name}/#{@name}.spec"`
     end
   end
 end

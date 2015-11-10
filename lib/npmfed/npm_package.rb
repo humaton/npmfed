@@ -22,11 +22,11 @@ module Npmfed
     end
 
     def tarball
-      puts @npm_data.keys
       @npm_data["dist"]["tarball"]
     end
 
     def licenses
+      puts @npm_data['licenses']
       @npm_data['licenses']
     end
 
