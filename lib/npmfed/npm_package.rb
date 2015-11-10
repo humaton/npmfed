@@ -37,9 +37,8 @@ module Npmfed
         if pkgdb_data
           result["#{name}"] = {distgit_branches: Array.new, builds: Array.new}
 
-          pkgdb_data['packages'].each do |package|
-            result["#{name}"][:distgit_branches] << package['collection']['branchname']
-          end
+          puts pkgdb_data.inspect
+          result["#{name}"][:distgit_branches] = pkgdb_data
         else
           result["#{name}"] = nil
         end
@@ -62,13 +61,13 @@ module Npmfed
 
     def pkg_in_fedora? name
       @pkgdb_requests += 1
-      #"git ls-remote http://pkgs.fedoraproject.org/cgit/" + pkg + ".git/"
-      pkgdb_uri = URI "https://admin.fedoraproject.org/pkgdb/api/package/?pkgname=nodejs-#{name}"
-      pkgdb_data = JSON.parse Net::HTTP.get(pkgdb_uri)
-      if (pkgdb_data["output"] == 'notok') then
-        return false
-      else
-        return pkgdb_data
+      IO.popen("git ls-remote http://pkgs.fedoraproject.org/cgit/nodejs-" + name + ".git/") do |f|
+        result = f.readlines.collect {|branch| branch.match(/\/[emf][a-z]*[0-9]*/).to_s }
+        if result.empty?
+          return false
+        else
+          return result.compact
+        end
       end
     end
 
