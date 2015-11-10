@@ -39,13 +39,15 @@ class MyCLI < Thor
       `wget #{tarball_uri} -P #{package.rpmname}/`
 
       if options[:deps]
+        dependencies = []
         package.dependencies.each do |name, data|
           if data.nil?
-          #dependency = Npmfed::NpmPackage.new name, @debug
+          dependency = Npmfed::NpmPackage.new name, @debug
           puts name + "  DOWNLOADING  ".to_s.red
-          FileUtils.mkdir_p "#{package.rpmname}/nodejs-#{name}"
-          #tarball_uri = URI dependency.tarball
-          #`wget #{tarball_uri} -P nodejs-#{name}/`
+          FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
+          tarball_uri = URI dependency.tarball
+          `wget #{tarball_uri} -P "#{package.rpmname}/deps/nodejs-#{name}"/`
+          dependencies << dependency
           end
         end
       end

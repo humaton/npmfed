@@ -30,19 +30,17 @@ module Npmfed
     end
 
     def get_dependencies
-      puts "Getting infromation about the package and its dependencies from pkgdb"
+      puts "Getting infromation about #{@name} and its dependencies from pkgdb"
       result = {}
       @npm_data['dependencies'].each do |name, version|
         pkgdb_data = pkg_in_fedora? name
         if pkgdb_data
           result["#{name}"] = {distgit_branches: Array.new, builds: Array.new}
-
-          puts pkgdb_data.inspect
           result["#{name}"][:distgit_branches] = pkgdb_data
         else
           result["#{name}"] = nil
         end
-      end
+      end unless @npm_data['dependencies'].nil?
       puts "DONE".green
       return result
     end
@@ -62,7 +60,7 @@ module Npmfed
     def pkg_in_fedora? name
       @pkgdb_requests += 1
       IO.popen("git ls-remote http://pkgs.fedoraproject.org/cgit/nodejs-" + name + ".git/") do |f|
-        result = f.readlines.collect {|branch| branch.match(/\/[emf][a-z]*[0-9]*/).to_s }
+        result = f.readlines.collect {|branch| branch.match(/\/[emf][a-z]*[0-9]*/).to_s[1..-1] }
         if result.empty?
           return false
         else
