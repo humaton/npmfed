@@ -34,10 +34,15 @@ class MyCLI < Thor
     end
 
     if options[:create]
+
       FileUtils.mkdir_p "#{package.rpmname}"
       tarball_uri = URI package.tarball
       `wget #{tarball_uri} -P #{package.rpmname}/`
 
+      rpm_package = Npmfed::RpmPackage.new package.name, package
+      rpm_package.write
+
+      puts rpm_package.inspect
       if options[:deps]
         dependencies = []
         package.dependencies.each do |name, data|
