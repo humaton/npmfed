@@ -7,7 +7,7 @@ require 'colorize'
 
 class MyCLI < Thor
   @debug = false
-  desc "check NPM PACKAGE NAME", "Get list of npm package dependencies and corresponding fedora builds"
+  desc "check NPM MODULE NAME", "Get list of npm package dependencies and corresponding fedora builds"
   option :create
   option :deps
   def check(name, version=nil)
@@ -64,7 +64,7 @@ class MyCLI < Thor
   def test(name)
   end
 
-  desc 'download ...' , '... IDES'
+  desc 'download NPM MODULE NAME' , 'downloads latest tarball from npmjs'
   def download
   end
 end
