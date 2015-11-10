@@ -54,9 +54,7 @@ module Npmfed
       if @npm_package.licenses.nil?
         [ "Unknown" ]
       else
-        @npm_package.licenses.map do |l|
-          l['type']
-        end
+        [@npm_package.licenses]
       end
     end
 

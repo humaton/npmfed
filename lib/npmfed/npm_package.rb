@@ -26,8 +26,7 @@ module Npmfed
     end
 
     def licenses
-      puts @npm_data['licenses']
-      @npm_data['licenses']
+      @npm_data['license']
     end
 
     def get_dependencies
