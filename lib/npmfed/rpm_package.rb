@@ -117,6 +117,10 @@ module Npmfed
       dependencies @npm_package.npmdata["devDependencies"]
     end
 
+    def version
+      @npm_package.version
+    end
+
     def write
       require 'uri'
       require 'pathname'
@@ -126,7 +130,7 @@ module Npmfed
       if File.readable? path
         @local_source = path
       else
-        @local_source = Download.new(url).save.filename
+        puts "DOWNLOAD THE FILE".red
       end
 
       require 'erb'
