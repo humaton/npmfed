@@ -22,6 +22,7 @@ module Npmfed
     end
 
     def tarball
+      puts @npm_data.keys
       @npm_data["dist"]["tarball"]
     end
 
