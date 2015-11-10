@@ -19,14 +19,10 @@ Or using fedora/centos repositories
 
     $ dnf install rubygem-npmfed
 ## Usage
-   npmfed check NPM MODULE NAME
+npmfed check NPM MODULE NAME
+npmfed download NPM MODULE NAME
 
-   Options:
-     [--create=CREATE]  # Create directory, download sources from npmjs and generate spec file
-     [--deps=DEPS]      # Used with create will do the same for dependencies
-     [--scl=SCL]        # Run spec2scl on generated spec file
-
-npmfed download only download tarball from npmjs or srpms from fedora
+For more information invoke npmfed help COMMAND
 
 
 ## Development
