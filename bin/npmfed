@@ -42,7 +42,6 @@ class MyCLI < Thor
       rpm_package = Npmfed::RpmPackage.new package.name, package
       rpm_package.write
 
-      puts rpm_package.inspect
       if options[:deps]
         dependencies = []
         package.dependencies.each do |name, data|

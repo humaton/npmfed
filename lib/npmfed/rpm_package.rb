@@ -60,15 +60,15 @@ module Npmfed
     end
 
     def summary
-      @npm_package.npmdata["description"]
+      @npm_package.npm_data["description"]
     end
 
     def description
-      @npm_package.npmdata["description"]
+      @npm_package.npm_data["description"]
     end
 
     def homepage
-      @npm_package.npmdata["homepage"] || @npm_package.tarball || abort('FIXME: No homepage found')
+      @npm_package.npm_data["homepage"] || @npm_package.tarball || abort('FIXME: No homepage found')
     end
 
     def add_source name
@@ -83,7 +83,7 @@ module Npmfed
     end
 
     def binfiles
-      @npm_package.npmdata["bin"]
+      @npm_package.npm_data["bin"]
     end
 
     # helper for provides
@@ -108,31 +108,24 @@ module Npmfed
     end
 
     def requires
-      req = dependencies(@npm_package.npmdata["dependencies"])
-      req += dependencies(@npm_package.npmdata["peerDependencies"])
+      req = dependencies(@npm_package.npm_data["dependencies"])
+      req += dependencies(@npm_package.npm_data["peerDependencies"])
       req
     end
 
     def build_requires
-      dependencies @npm_package.npmdata["devDependencies"]
+      dependencies @npm_package.npm_data["devDependencies"]
     end
 
     def version
       @npm_package.version
     end
 
-    def write
-      require 'uri'
-      require 'pathname'
-      url = @npm_package.tarball
-      uri = URI url
-      path = Pathname.new(uri.path).basename
-      if File.readable? path
-        @local_source = path
-      else
-        puts "DOWNLOAD THE FILE".red
-      end
+    def tests
+      @npm_package.npm_data["test"]
+    end
 
+    def write
       require 'erb'
 
       template_name = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "templates", "nodejs-fedora.spec.erb"))
@@ -143,7 +136,8 @@ module Npmfed
         spec = self
         f.puts(erb.result(binding()))
       end
-      `rpmdev-bumpspec  "#{@name}.spec" -c Initial build`
+
+      `rpmdev-bumpspec  -c "Initial build" "#{@name}/#{@name}.spec"`
     end
   end
 end

@@ -10,33 +10,38 @@ Version:	<%= spec.version %>
 Release:	0%{?dist}
 Summary:	<%= spec.summary %>
 <% unless spec.homepage.nil? || spec.homepage.empty? -%>
-    Url:		<%= spec.homepage %>
+Url:		<%= spec.homepage %>
 <% end -%>
 Source0:	https://registry.npmjs.org/%{npm_name}/-/%{npm_name}-%{version}.tgz
 <% unless spec.licenses.empty? -%>
-    License:	<%= spec.licenses.join(" and ") %>
+License:	<%= spec.licenses.join(" and ") %>
 <% else -%>
-    License:	CHECK(Nodejs)
+License:	CHECK(Nodejs)
 <% end -%>
 
 BuildArch:	noarch
-ExclusiveArch:	%{nodejs_arches} noarch
 
-BuildRequires:	nodejs-devel
-BuildRequires:	nodejs-packaging
+%if 0%{?fedora} >= 19
+ExclusiveArch: %{nodejs_arches} noarch
+%else
+ExclusiveArch: %{ix86} x86_64 %{arm} noarch
+%endif
+
+BuildRequires:  nodejs-devel
+BuildRequires:  nodejs-packaging
 
 %if 0%{?enable_tests}
 <% spec.build_requires.uniq.sort.each do |d| -%>
-    BuildRequires:	<%= d %>
+BuildRequires:	<%= d %>
 <% end -%>
 %endif
 
 <% spec.requires.uniq.sort.each do |d| -%>
-    BuildRequires:	<%= d %>
+BuildRequires:	<%= d %>
 <% end -%>
 
 <% spec.requires.uniq.sort.each do |d| -%>
-    Requires:	<%= d %>
+Requires:	<%= d %>
 <% end -%>
 
 %description
@@ -46,18 +51,20 @@ BuildRequires:	nodejs-packaging
 %prep
 %setup -q -n package
 
+rm -rf node_modules
+
 %build
 #nothing to do
 
 %install
 mkdir -p %{buildroot}%{nodejs_sitelib}/%{npm_name}
 
-cp -pr package.json index.js \
+cp -pr package.json *.js \
 %{buildroot}%{nodejs_sitelib}/%{npm_name}
 
 <% (spec.binfiles||{}).each do |name, target| -%>
-    rm -f %{buildroot}%{_bindir}/<%= name %>
-    ln -sf %{_libdir}/node_modules/%{npm_name}/<%= target -%> %{buildroot}%{_bindir}/<%= name %>
+rm -f %{buildroot}%{_bindir}/<%= name %>
+ln -sf %{_libdir}/node_modules/%{npm_name}/<%= target -%> %{buildroot}%{_bindir}/<%= name %>
 <% end -%>
 %{nodejs_symlink_deps}
 
@@ -70,7 +77,7 @@ cp -pr package.json index.js \
 %files
 %{nodejs_sitelib}/<%= spec.npmname %>
 <% if spec.binfiles -%>
-    %{_bindir}/*
+%{_bindir}/*
 <% end %>
 %doc README.md
 %license LICENSE
