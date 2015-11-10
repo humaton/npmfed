@@ -137,9 +137,9 @@ module Npmfed
       end
 
       `rpmdev-bumpspec  -c "Initial build" "#{path unless path.nil?}#{@name}/#{@name}.spec"`
+      `spec2scl -i "#{path unless path.nil?}#{@name}/#{@name}.spec"` if @scl
       command = "cd #{path unless path.nil?}#{@name}/ && fedpkg --dist=f24 srpm"
       `#{command}`
-      `spec2scl -i "#{path unless path.nil?}#{@name}/#{@name}.spec"` if @scl
     end
   end
 end

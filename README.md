@@ -8,26 +8,23 @@ Aim of this project is to create tool similar to gofed which will guide packager
 
 ### Dependencies
 
- git, wget, koji
+ git, wget, koji, spec2scl
 
-Add this line to your application's Gemfile:
 
-```ruby
-gem 'npmfed'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
+Install it yourself as:
 
     $ gem install npmfed
 
+Or using fedora/centos repositories
+
+    $ dnf install rubygem-npmfed
 ## Usage
+   npmfed check NPM MODULE NAME
 
-npmfed check NPM_PACKAGE_NAME Get list of npm package dependencies and corresponding fedora builds
-
+   Options:
+     [--create=CREATE]  # Create directory, download sources from npmjs and generate spec file
+     [--deps=DEPS]      # Used with create will do the same for dependencies
+     [--scl=SCL]        # Run spec2scl on generated spec file
 
 npmfed download only download tarball from npmjs or srpms from fedora
 

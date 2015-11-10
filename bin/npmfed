@@ -8,9 +8,9 @@ require 'colorize'
 class MyCLI < Thor
   @debug = false
   desc "check NPM MODULE NAME", "Get list of npm package dependencies and corresponding fedora builds"
-  option :create
-  option :deps
-  option :scl
+  option :create, :desc => 'Create directory, download sources from npmjs and generate spec file'
+  option :deps, :desc => 'Used with create will do the same for dependencies'
+  option :scl, :desc => 'Run spec2scl on generated spec file'
 
   def check(name, version=nil)
     package = Npmfed::NpmPackage.new name, @debug
