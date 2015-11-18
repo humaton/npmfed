@@ -11,9 +11,10 @@ class MyCLI < Thor
   option :create, :desc => 'Create directory, download sources from npmjs and generate spec file'
   option :deps, :desc => 'Used with create will do the same for dependencies'
   option :scl, :desc => 'Run spec2scl on generated spec file'
+  option :version, :type => :string,:desc => 'Specify version of package you want to create'
 
-  def check(name, version=nil)
-    package = Npmfed::NpmPackage.new name, @debug
+  def check(name, version = options[:version])
+    package = Npmfed::NpmPackage.new name, @debug, version
 
     puts "#{package.name}-#{package.version} dependencies:"
     puts "================================================"
@@ -48,22 +49,18 @@ class MyCLI < Thor
         dependencies = []
         package.dependencies.each do |name, data|
           if data.nil?
-          dependency = Npmfed::NpmPackage.new name, @debug
-          puts name + "  DOWNLOADING  ".to_s.red
-          FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
-          tarball_uri = URI dependency.tarball
-          `wget #{tarball_uri} -P "#{package.rpmname}/deps/nodejs-#{name}"/`
-          dep_rpm_package = Npmfed::RpmPackage.new name, dependency, options[:scl]
-          dep_rpm_package.write "#{package.rpmname}/deps/"
-          dependencies << dependency
+            dependency = Npmfed::NpmPackage.new name, @debug
+            puts name + "  DOWNLOADING  ".to_s.red
+            FileUtils.mkdir_p "#{package.rpmname}/deps/nodejs-#{name}"
+            tarball_uri = URI dependency.tarball
+            `wget #{tarball_uri} -P "#{package.rpmname}/deps/nodejs-#{name}"/`
+            dep_rpm_package = Npmfed::RpmPackage.new name, dependency, options[:scl]
+            dep_rpm_package.write "#{package.rpmname}/deps/"
+            dependencies << dependency
           end
         end
       end
     end
-  end
-
-  desc 'test IDES', 'Used for testing shit'
-  def test(name)
   end
 
   desc 'download NPM MODULE NAME' , 'downloads latest tarball from npmjs'
