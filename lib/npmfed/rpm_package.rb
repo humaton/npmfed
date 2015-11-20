@@ -124,6 +124,10 @@ module Npmfed
       @npm_package.npm_data["test"]
     end
 
+    def build
+      @npm_package.npm_data["scripts"].nil? ? '#nothing to do' : @npm_package.npm_data["scripts"]["build"]
+    end
+
     def write path = nil
       require 'erb'
 

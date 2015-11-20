@@ -54,7 +54,8 @@ Requires:	<%= d %>
 rm -rf node_modules
 
 %build
-#nothing to do
+
+<%= spec.build %>
 
 %install
 mkdir -p %{buildroot}%{nodejs_sitelib}/%{npm_name}
