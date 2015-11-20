@@ -17,6 +17,8 @@ module Npmfed
       result = Array.new
       deps ||= Hash.new
       deps.each do |name, version|
+        result << "npm(#{name})"
+=begin
         case version
           # "~1.2.3"
           when /^~?(\d+(\.\d+)*)(-\d)?([a-z]+)?$/
@@ -46,6 +48,7 @@ module Npmfed
           else
             raise "Unrecognized dependency #{name.inspect}: #{version.inspect}"
         end
+=end
       end
       result
     end
